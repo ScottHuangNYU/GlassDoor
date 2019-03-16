@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDatabase {
-  public Map<Integer, String> userNames = new HashMap<>();
-  public Map<Integer, String> addresses = new HashMap<>();
+  // I combined userName Map and addresses Map to USER_INFORMATION
+  public static final Map<Integer, Infor> USER_INFORMATION = new HashMap<>();
 
   public UserDatabase() {
     readDB();
@@ -20,16 +20,44 @@ public class UserDatabase {
       String line;
       while ((line = br.readLine()) != null) {
         String splits[] = line.split("\t");
-          userNames.put(Integer.parseInt(splits[0]), splits[1]);
-          addresses.put(Integer.parseInt(splits[0]), splits[2]);
+
+        // I call the addNewUser method to insert user information to the map instead of using put method of map directly
+        addNewUser(Integer.parseInt(splits[0]), splits[1],splits[2]);
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void add_new_user(Integer userid, String username, String address) {
-    userNames.put(userid, username);
-    addresses.put(userid, address);
+  public void addNewUser(Integer userId, String username, String address) throws Exception{
+    // Since the userId is unique, if one userId is going to insert into map second time, it will throw an exception.
+    if(USER_INFORMATION.containsKey(userId)) throw new Exception("UserId already exist!");
+    else{
+      USER_INFORMATION.put(userId, new Infor(username, address));
+    }
+  }
+}
+
+// I used Infor class to store userName and userAdd together.
+class Infor{
+
+  private String userName;
+
+  private String userAdd;
+
+  public Infor(){}
+
+  public Infor(String s1, String s2){
+    this.userName = s1;
+    this.userAdd = s2;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+
+  public String getUserAdd() {
+    return userAdd;
   }
 }

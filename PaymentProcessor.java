@@ -2,24 +2,26 @@
 
 public class PaymentProcessor {
 
-  public boolean process_payment(IncomingRequest incomingrequest) {
-    UserDatabase userDatabase = new UserDatabase();
-    if (userDatabase.userNames.containsKey(incomingrequest.userId)) {
-      if (incomingrequest.userName.equals(userDatabase.userNames.get(incomingrequest.userId))
-          && validateAddress(incomingrequest.billingAddress, userDatabase.addresses.get(incomingrequest.userId))) {
+
+  // I change the input of processPayment method because I think this method is used to compare the information of incomingrequest and database.
+  // I don't need to involve the database in this method, instead, I just need to give the userInformation of database to this method.
+  public boolean processPayment(IncomingRequest incomingrequest, Infor userInformation) {
+
+      // both userName and userAddress, I used validate method to identity whether the data from request is the same as the data from database
+      if (validateInfor(incomingrequest.userName, userInformation.getUserName())
+          && validateInfor(incomingrequest.billingAddress, userInformation.getUserAdd())) {
         try {
-          submitPayment(incomingrequest.cardnumber, incomingrequest.amount);
+          submitPayment(incomingrequest.cardNumber, incomingrequest.amount);
           return true;
         } catch (Exception e) {
           return false;
         }
       }
-    }
-    return false;
+      return false;
   }
 
-  public boolean validateAddress(String addressFromRequest, String addressFromDatabase) {
-    if (addressFromRequest.equals(addressFromDatabase)) {
+  public boolean validateInfor(String informationFromRequest, String informationFromDatabase) {
+    if (informationFromRequest.equals(informationFromDatabase)) {
       return true;
     } else {
       return false;
